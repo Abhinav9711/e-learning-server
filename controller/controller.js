@@ -28,7 +28,9 @@ const createUser = async(req, res) => {
         })
         await StudentDetails.save();
 
-        res.status(200).json({ message: `User : ${studentName}, registered successfully`, status: 'success', data: { studentName, email } });
+        const {liveCourse, upcomingCourse} = await getCourse();
+        res.json({ data: {liveCourse, upcomingCourse}, message: 'User sigin successfull', status: 'success' });
+
     }
     catch (error) {
         res.json({ 'message': error.message, status: 'failed' });
