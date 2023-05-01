@@ -52,8 +52,8 @@ const loginUser = async(req, res) => {
             return;
         }
 
-
-        res.json({ data: userData, message: 'User sigin successfull', status: 'success' });
+        const {liveCourse, upcomingCourse} = await getCourse();
+        res.json({ data: {liveCourse, upcomingCourse}, message: 'User sigin successfull', status: 'success' });
     }
 
     catch (error) {
@@ -62,21 +62,23 @@ const loginUser = async(req, res) => {
 
 }
 
-const getCourse = async(req, res) => {
+const getCourse = async() => {
     const courseData = await Course.find({}); 
     let liveCourse = [];
     let upcomingCourse = [];
     await courseData.map(course => {
-        const {live} = course;
-        if(live) {
-            liveCourse.push(course);
+        const {isLive, courseName, quiz} = course;
+        if(isLive) {
+            
+            liveCourse.push({courseName, quiz});
         }
         else {
-            upcomingCourse.push(course);
+            upcomingCourse.push({courseName, quiz});
         }
     })
 
-    res.json({ liveCourse, upcomingCourse, status: 'success' });
+    //res.json({ liveCourse, upcomingCourse, status: 'success' });
+    return ({liveCourse, upcomingCourse});
 }
 
 const getQuiz = async(req, res) => {
